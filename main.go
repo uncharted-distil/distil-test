@@ -147,7 +147,7 @@ func waitForDistil(maxRetries int, url string) error {
 			return nil
 		}
 		log.Infof("distil not up yet (attempt %d)", i+1)
-		time.Sleep(5 * time.Second)
+		time.Sleep(20 * time.Second)
 	}
 
 	return errors.Errorf("no response after %d retries", maxRetries)
