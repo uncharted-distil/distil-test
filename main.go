@@ -61,15 +61,17 @@ func main() {
 	app.Flags = []cli.Flag{}
 	app.Action = func(c *cli.Context) error {
 
+		endpoint := fmt.Sprintf("%s:%d", config.Endpoint, config.AppPort)
+
 		// wait fot Distil
-		err = waitForDistil(config.RetryCount, fmt.Sprintf("http://%s/distil/config", config.AppEndpoint))
+		err = waitForDistil(config.RetryCount, fmt.Sprintf("http://%s/distil/config", endpoint))
 		if err != nil {
 			log.Errorf("%v", err)
 			return cli.NewExitError(errors.Cause(err), 2)
 		}
 
 		// initialize client
-		u := url.URL{Scheme: "ws", Host: config.AppEndpoint, Path: "/ws"}
+		u := url.URL{Scheme: "ws", Host: endpoint, Path: "/ws"}
 		log.Infof("connecting to %s", u.String())
 
 		conn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
@@ -79,7 +81,7 @@ func main() {
 		}
 		defer conn.Close()
 
-		log.Infof("Using app interface at `%s` ", config.AppEndpoint)
+		log.Infof("Using app interface at `%s` ", endpoint)
 		err = conn.WriteMessage(websocket.TextMessage, getRequest(config.Dataset))
 		if err != nil {
 			log.Errorf("%v", err)

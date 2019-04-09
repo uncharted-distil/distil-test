@@ -28,9 +28,10 @@ var (
 
 // Config represents the application configuration state loaded from env vars.
 type Config struct {
-	AppEndpoint string `env:"ENDPOINT" envDefault:"10.64.16.186:8080"`
-	Dataset     string `env:"DATASET" envDefault:"196_autoMpg_dataset_TRAIN"`
-	RetryCount  int    `env:"RETRY_COUNT" envDefault:"60"`
+	Endpoint   string `env:"ENDPOINT" envDefault:"10.64.16.186"`
+	AppPort    int    `env:"APP_PORT" envDefault:"80"`
+	Dataset    string `env:"DATASET" envDefault:"196_autoMpg_dataset_TRAIN"`
+	RetryCount int    `env:"RETRY_COUNT" envDefault:"60"`
 }
 
 // LoadConfig loads the config from the environment if necessary and returns a
