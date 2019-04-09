@@ -139,7 +139,7 @@ func isSuccess(conn *websocket.Conn) bool {
 
 func waitForDistil(maxRetries int, url string) error {
 	// can be determined by hitting the config endpoint
-	log.Infof("waiting for distil to be up...")
+	log.Infof("waiting for distil to be up at %s...", url)
 	for i := 0; i < maxRetries; i++ {
 		// will error if not available
 		_, err := http.Get(url)
