@@ -64,7 +64,7 @@ func main() {
 		endpoint := fmt.Sprintf("%s:%d", config.Endpoint, config.AppPort)
 
 		// wait fot Distil
-		err = waitForDistil(config.RetryCount, fmt.Sprintf("http://%s/distil/config", endpoint))
+		err = waitForDistil(config.RetryCount, fmt.Sprintf("%s/distil/config", endpoint))
 		if err != nil {
 			log.Errorf("%v", err)
 			return cli.NewExitError(errors.Cause(err), 2)
