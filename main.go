@@ -22,6 +22,7 @@ import (
 	"net/url"
 	"os"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -61,10 +62,10 @@ func main() {
 	app.Flags = []cli.Flag{}
 	app.Action = func(c *cli.Context) error {
 
-		endpoint := fmt.Sprintf("%s:%d", config.Endpoint, config.AppPort)
+		endpoint := fmt.Sprintf("%s:%d", strings.TrimPrefix(config.Endpoint, "http://"), config.AppPort)
 
 		// wait fot Distil
-		err = waitForDistil(config.RetryCount, fmt.Sprintf("%s/distil/config", endpoint))
+		err = waitForDistil(config.RetryCount, fmt.Sprintf("http://%s/distil/config", endpoint))
 		if err != nil {
 			log.Errorf("%v", err)
 			return cli.NewExitError(errors.Cause(err), 2)
@@ -146,6 +147,7 @@ func waitForDistil(maxRetries int, url string) error {
 		// will error if not available
 		_, err := http.Get(url)
 		if err == nil {
+			log.Infof("distil is up and running")
 			return nil
 		}
 		log.Infof("distil not up yet (attempt %d)", i+1)
