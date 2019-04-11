@@ -33,6 +33,10 @@ import (
 	"github.com/uncharted-distil/distil-test/env"
 )
 
+const (
+	messageTimeout = 20
+)
+
 type WSMessage struct {
 	ID         string `json:"id"`
 	ResultID   string `json:"resultId"`
@@ -108,7 +112,7 @@ func isSuccess(conn *websocket.Conn) bool {
 	log.Infof("Waiting for messages...")
 	success := false
 	for {
-		_, message, err := conn.ReadMessage()
+		message, err := getMessage(conn)
 		if err != nil {
 			log.Errorf("%v", err)
 			break
@@ -132,12 +136,36 @@ func isSuccess(conn *websocket.Conn) bool {
 
 		if msg.Progress == "REQUEST_COMPLETED" && msg.Error == "" {
 			success = true
-			//break
 		}
 	}
 	log.Infof("Done reading messages")
 
 	return success
+}
+
+func getMessage(conn *websocket.Conn) ([]byte, error) {
+	results := make(chan []byte)
+	errs := make(chan error)
+	go getMessageSync(conn, results, errs)
+	select {
+	case res := <-results:
+		return res, nil
+	case err := <-errs:
+		return nil, err
+	case <-time.After(messageTimeout * time.Minute):
+		return nil, errors.Errorf("timeout waiting for message")
+	}
+
+	return nil, nil
+}
+
+func getMessageSync(conn *websocket.Conn, results chan []byte, errs chan error) {
+	_, message, err := conn.ReadMessage()
+	if err != nil {
+		errs <- err
+	} else {
+		results <- message
+	}
 }
 
 func waitForDistil(maxRetries int, url string) error {
