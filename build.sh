@@ -5,11 +5,15 @@ source ./server/config.sh
 HIGHLIGHT='\033[0;34m'
 NC='\033[0m'
 
+# inject build info
+VERSION=$(git rev-list -1 HEAD)
+TIMESTAMP=`date +%FT%T%z`
+
 echo -e "${HIGHLIGHT}Getting distil-ingest..${NC}"
 
 # get distil-ingest and force a static rebuild of it so that it can run on Alpine
 go get -u -v github.com/uncharted-distil/distil-test/
-env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a github.com/uncharted-distil/distil-test/
+env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags "-X main.version=${VERSION} -X main.timestamp=${TIMESTAMP}" github.com/uncharted-distil/distil-test/
 mv distil-test ./server
 
 echo -e "${HIGHLIGHT}Building image ${DOCKER_IMAGE_NAME}...${NC}"

@@ -37,6 +37,11 @@ const (
 	messageTimeout = 20
 )
 
+var (
+	version   = "unset"
+	timestamp = "unset"
+)
+
 type WSMessage struct {
 	ID         string `json:"id"`
 	ResultID   string `json:"resultId"`
@@ -51,6 +56,8 @@ type WSMessage struct {
 func main() {
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
+
+	log.Infof("version: %s timestamp: %s", version, timestamp)
 
 	config, err := env.LoadConfig()
 	if err != nil {
