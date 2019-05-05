@@ -108,8 +108,10 @@ func main() {
 }
 
 func isSuccess(conn *websocket.Conn) bool {
-	// success is defined as one pipeline running to completion without error
+	// success is defined as one pipeline running to completion without error - this means
+	// we get at least one SOLUTION_COMPLETED message and a REQUEST_COMPLETED message.
 	log.Infof("Waiting for messages...")
+	solutionCompleted := false
 	success := false
 	for {
 		message, err := getMessage(conn)
@@ -134,7 +136,11 @@ func isSuccess(conn *websocket.Conn) bool {
 			log.Errorf("error received from Distil")
 		}
 
-		if msg.Progress == "REQUEST_COMPLETED" && msg.Error == "" {
+		if msg.Progress == "SOLUTION_COMPLETED" && msg.Error == "" {
+			solutionCompleted = true
+		}
+
+		if msg.Progress == "REQUEST_COMPLETED" && msg.Error == "" && solutionCompleted {
 			success = true
 		}
 	}
