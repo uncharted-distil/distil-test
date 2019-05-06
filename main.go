@@ -206,7 +206,7 @@ func getRequest(dataset string) []byte {
             "dataset": "%s",
             "filters": {
                 "filters": [],
-                "variables": ["cylinders", "displacement", "acceleration"]
+                "variables": ["cylinders", "displacement", "acceleration", "class"]
             },
             "maxSolutions": 3,
             "maxTime": 1000,
