@@ -30,7 +30,7 @@ var (
 type Config struct {
 	Endpoint   string `env:"ENDPOINT" envDefault:"http://10.64.16.186"`
 	AppPort    int    `env:"APP_PORT" envDefault:"80"`
-	Dataset    string `env:"DATASET" envDefault:"196_autoMpg_dataset_TRAIN"`
+	Dataset    string `env:"DATASET" envDefault:"196_autoMpg_MIN_METADATA_dataset_TRAIN"`
 	RetryCount int    `env:"RETRY_COUNT" envDefault:"60"`
 }
 
