@@ -163,8 +163,6 @@ func getMessage(conn *websocket.Conn) ([]byte, error) {
 	case <-time.After(messageTimeout * time.Minute):
 		return nil, errors.Errorf("timeout waiting for message")
 	}
-
-	return nil, nil
 }
 
 func getMessageSync(conn *websocket.Conn, results chan []byte, errs chan error) {
