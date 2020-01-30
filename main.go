@@ -25,6 +25,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 	log "github.com/unchartedsoftware/plog"
@@ -64,6 +65,7 @@ func main() {
 		log.Errorf("%+v", err)
 		os.Exit(1)
 	}
+	log.Infof("%+v", spew.Sdump(config))
 
 	app := cli.NewApp()
 	app.Name = "distil-test"
